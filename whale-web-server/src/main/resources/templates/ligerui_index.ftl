@@ -1,16 +1,20 @@
 ﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title>jQuery ligerUI Demos导航主页</title>
+    <title>导航主页</title>
     <link href="${springMacroRequestContext.contextPath}/static/lib/ligerUI/skins/Aqua/css/ligerui-all.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" type="text/css" id="mylink"/>   
     <script src="${springMacroRequestContext.contextPath}/static/lib/jquery/jquery-1.9.0.min.js" type="text/javascript"></script>
     <script src="${springMacroRequestContext.contextPath}/static/lib/ligerUI/js/ligerui.all.js" type="text/javascript"></script>
     <script src="${springMacroRequestContext.contextPath}/static/lib/jquery.cookie.js"></script>
     <script src="${springMacroRequestContext.contextPath}/static/lib/json2.js"></script>
-    <script src="${springMacroRequestContext.contextPath}/static/lib/indexdata.js" type="text/javascript"></script>
         <script type="text/javascript">
- 
+
+            $.get("${springMacroRequestContext.contextPath}/ligerui/indexdata",function(data){
+                render(data);
+            });
+
+            function render(indexdata){
             var tab = null;
             var accordion = null;
             var tree = null;
@@ -48,7 +52,7 @@
                         saveTabStatus();
                     },
                     onAfterRemoveTabItem: function (tabid)
-                    { 
+                    {
                         for (var i = 0; i < tabItems.length; i++)
                         {
                             var o = tabItems[i];
@@ -94,7 +98,7 @@
                     {
                         if (!node.data.url) return;
                         if (node.data.isnew)
-                        { 
+                        {
                             return;
                         }
                         var tabid = $(node.target).attr("tabid");
@@ -102,13 +106,13 @@
                         {
                             tabid = new Date().getTime();
                             $(node.target).attr("tabid", tabid)
-                        } 
+                        }
                         f_addTab(tabid, node.data.text, node.data.url);
                     }
                 });
 
                 function openNew(url)
-                { 
+                {
                     var jform = $('#opennew_form');
                     if (jform.length == 0)
                     {
@@ -116,9 +120,9 @@
                     } else
                     {
                         jform.empty();
-                    } 
+                    }
                     jform.attr('action', url);
-                    jform.attr('target', '_blank'); 
+                    jform.attr('target', '_blank');
                     jform.trigger('submit');
                 };
 
@@ -132,7 +136,7 @@
                 pages_init();
             });
             function f_heightChanged(options)
-            {  
+            {
                 if (tab)
                     tab.addHeight(options.diff);
                 if (accordion && options.middleHeight - 24 > 0)
@@ -146,36 +150,9 @@
                     url: url,
                     callback: function ()
                     {
-                        addShowCodeBtn(tabid); 
-                        addFrameSkinLink(tabid); 
+                        addFrameSkinLink(tabid);
                     }
                 });
-            }
-            function addShowCodeBtn(tabid)
-            {
-                var viewSourceBtn = $('<a class="viewsourcelink" href="javascript:void(0)">查看源码</a>');
-                var jiframe = $("#" + tabid);
-                viewSourceBtn.insertBefore(jiframe);
-                viewSourceBtn.click(function ()
-                {
-                    showCodeView(jiframe.attr("src"));
-                }).hover(function ()
-                {
-                    viewSourceBtn.addClass("viewsourcelink-over");
-                }, function ()
-                {
-                    viewSourceBtn.removeClass("viewsourcelink-over");
-                });
-            }
-            function showCodeView(src)
-            {
-                $.ligerDialog.open({
-                    title : '源码预览',
-                    url: 'dotnetdemos/codeView.aspx?src=' + src,
-                    width: $(window).width() *0.9,
-                    height: $(window).height() * 0.9
-                });
-
             }
             function addFrameSkinLink(tabid)
             {
@@ -193,18 +170,18 @@
             };
             function pages_init()
             {
-                var tabJson = $.cookie('liger-home-tab'); 
+                var tabJson = $.cookie('liger-home-tab');
                 if (tabJson)
-                { 
+                {
                     var tabitems = JSON2.parse(tabJson);
                     for (var i = 0; tabitems && tabitems[i];i++)
-                    { 
+                    {
                         f_addTab(tabitems[i].tabid, tabitems[i].text, tabitems[i].url);
-                    } 
+                    }
                 }
             }
             function saveTabStatus()
-            { 
+            {
                 $.cookie('liger-home-tab', JSON2.stringify(tabItems));
             }
             function css_init()
@@ -212,7 +189,7 @@
                 var css = $("#mylink").get(0), skin = getQueryString("skin");
                 $("#skinSelect").val(skin);
                 $("#skinSelect").change(function ()
-                { 
+                {
                     if (this.value)
                     {
                         location.href = "index.htm?skin=" + this.value;
@@ -222,11 +199,11 @@
                     }
                 });
 
-               
+
                 if (!css || !skin) return;
                 skin = skin.toLowerCase();
-                $('body').addClass("body-" + skin); 
-                $(css).attr("href", skin_links[skin]); 
+                $('body').addClass("body-" + skin);
+                $(css).attr("href", skin_links[skin]);
             }
             function getQueryString(name)
             {
@@ -242,7 +219,7 @@
                 return false;
             }
             function attachLinkToFrame(iframeId, filename)
-            { 
+            {
                 if(!window.frames[iframeId]) return;
                 var head = window.frames[iframeId].document.getElementsByTagName('head').item(0);
                 var fileref = window.frames[iframeId].document.createElement("link");
@@ -266,7 +243,8 @@
                     }
                 }
             }
-     </script> 
+            }
+     </script>
 <style type="text/css"> 
     body,html{height:100%;}
     body{ padding:0px; margin:0;   overflow:hidden;}  
@@ -324,18 +302,6 @@
                      <div title="功能列表" class="l-scroll">
                          <ul id="tree1" style="margin-top:3px;">
                     </div>
-                    <div title="应用场景">
-                    <div style=" height:7px;"></div>
-                        <a class="l-link" href="http://www.ligerui.com/go.aspx?id=case" target="_blank">演示系统</a>  
-                         <a class="l-link" href="javascript:f_addTab('listpage','列表页面','demos/case/listpage.htm')">列表页面</a> 
-                         <a class="l-link" href="demos/dialog/win7.htm" target="_blank">模拟Window桌面</a> 
-                        <a class="l-link" href="javascript:f_addTab('week','工作日志','demos/case/week.htm')">工作日志</a>  
-                    </div>    
-                     <div title="实验室">
-                    <div style=" height:7px;"></div>
-                          <a class="l-link" href="lab/generate/index.htm" target="_blank">表格表单设计器</a> 
-                          <a class="l-link" href="lab/formdesign/index.htm" target="_blank">可视化表单设计</a> 
-                    </div> 
         </div>
         <div position="center" id="framecenter"> 
             <div tabid="home" title="我的主页" style="height:300px" >

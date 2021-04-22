@@ -1,14 +1,15 @@
-package com.github.controller;
+package com.github.system.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("ligerui")
-public class LigerUiIndexController {
+@RequestMapping("userManager")
+public class UserManagerController {
 
     @RequestMapping("index")
     public String index(){
-        return "ligerui_index";
+        return "user/user_index";
     }
+
 }
